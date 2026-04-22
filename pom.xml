@@ -7,7 +7,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>prepare</module>
 		<module>dog-service</module>
 		<module>dog-client</module>
 		<module>load-generator</module>
