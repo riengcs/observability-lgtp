@@ -1,154 +1,595 @@
-## Workshop Setup
-This file can be used to check that you have correctly installed everything that you need for the workshop.
+## Useful Commands
 
-If something does not work, please check the [troubleshooting section of `HELP.md`](HELP.md#troubleshooting). You can also contact us at [`slack.micrometer.io`](https://slack.micrometer.io/) in the [`#springio2026`](https://micrometer-metrics.slack.com/archives/C0APJ96GMDF) channel.
-
-### Java
-We will use Java 25 since it's the latest LTS but you can use anything from Java 17 to 26. If you want to use a Java version that is below 25, please search for `<java.version>25</java.version>` in the project files and modify them in the `pom.xml` files (there are three of them).
-
-We recommend using SDKMAN! to manage installed Java versions, but you're free to use whatever you prefer as long as at least Java 17 is available. On Windows, you will need bash to use SDKMAN! (Git Bash, MinGW, Cygwin, WSL, etc.), if you don't want to install it, you can try CHOCOLATEY! too.
-
-#### SDKMAN!
-The following instructions can be used if you are using SDKMAN!
-
-1. Install SDKMAN! for your system by following instructions at https://sdkman.io/
-2. Install Java
-
-```shell
-sdk install java 25.0.2-librca
+### Download dependencies, compile, create artifacts
 ```
-
-Set and check the Java version:
-```shell
-sdk use java 25.0.2-librca
-java --version
-```
-
-You should see a similar output:
-```
-openjdk 25.0.2 2026-01-20 LTS
-OpenJDK Runtime Environment (build 25.0.2+12-LTS)
-OpenJDK 64-Bit Server VM (build 25.0.2+12-LTS, mixed mode, sharing)
-```
-
-#### CHOCOLATEY! (Windows)
-The following instructions can be used if you are using CHOCOLATEY!
-
-1. Install CHOCOLATEY! for your system by following instructions at https://community.chocolatey.org/
-2. Install Java by running the following in a PowerShell as Administrator:
-
-```shell
-choco install microsoft-openjdk --version 25.0.2
-```
-(Liberica 25 is not available through Chocolatey right now, if you want to use that, check the Liberica docs for instructions for Windows.)
-
-Check that you can use Java:
-
-1. Open `System Properties`
-2. Click `Environment Variables...` and verify the `PATH` and `JAVA_HOME` System Variables to use the right JDK paths
-3. Open a new PowerShell window and check the Java version
-```shell
-java --version
-```
-
-#### Without SDKMAN! or CHOCOLATEY!
-If you prefer not to use SKDMAN! or CHOCOLATEY! you can install Java whichever way you're most comfortable with.
-As long as you have at least Java 17, you should be fine.
-
-Please check your installation by checking the output of `java --version`:
-```shell
-java --version
-```
-
-You should see a similar output:
-```
-openjdk 25.0.2 2026-01-20 LTS
-OpenJDK Runtime Environment (build 25.0.2+12-LTS)
-OpenJDK 64-Bit Server VM (build 25.0.2+12-LTS, mixed mode, sharing)
-```
-
-### Maven
-This workshop uses `mvnw` so you shouldn't need to install Maven directly.
-
-To check that Maven works, run the following command from this directory.
-
-On Linux/Mac:
-```shell
-./mvnw --version
-```
-
-On Windows:
-```shell
-mvnw.cmd --version
-```
-
-If you want to ensure your local Maven cache has most of the files we'll need, you can build the pom files in this directory:
-
-```shell
 ./mvnw package
 ```
 
-You should see a "success" message:
-```
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-```
-
-### Docker Compose
-We will be using Docker Compose to set up things like Postgres which we will need for the workshop.
-We recommend Docker Desktop if possible, but any Docker installation that can run `docker compose` should work fine.
-
-Docker Desktop is free for educational purposes.
-
-Please install Docker from https://www.docker.com or using your favorite open source distribution.
-
-To check Docker is running, you can run:
-```shell
-docker run --rm hello-world
-```
-
-To check docker compose is working, run the following from this directory:
-```shell
-docker compose -f docker-compose-hello.yml up
-```
-
-Once you see the "hello world" output, you can destroy the containers using:
-```shell
-docker compose -f docker-compose-hello.yml down
-```
-
-TIP: Depending on your installation, you might need to use the command `docker-compose` rather than `docker compose` (this usually means that you are using an older version, please consider upgrading).
-
-If the hello world example works, then you can try starting the full docker compose configuration that we'll be using:
+### Run Docker dependencies
 ```shell
 docker compose up
 ```
 
-NOTE: it will take some time to initially download images and start the containers. It will help to do this with a fast internet connection.
+### Start dog-service
+```shell
+./mvnw -pl dog-service clean spring-boot:run
+```
 
-Check that the following links work:
-- http://localhost:9090 (Prometheus)
-- http://localhost:3000 (Grafana)
+### Start dog-client
+```shell
+./mvnw -pl dog-client clean spring-boot:run
+```
 
-If everything works you can hit `ctrl-c` to stop docker compose, and you can destroy the containers using:
+### Start load-generator
+```shell
+./mvnw -pl load-generator gatling:test
+```
 
+If you want to modify the duration of the simulation, go to `DogsSimulation.java` and edit the `duration` variable.
+
+## Useful links, http commands
+
+### Backends
+- Grafana: http://localhost:3000
+- Prometheus: http://localhost:9090
+- Prometheus targets: http://localhost:9090/targets
+- Example Prometheus query: [`sum by (application) (rate(http_server_requests_seconds_count[5m]))`](http://localhost:9090/graph?g0.expr=sum%20by%20%28application%29%20%28rate%28http_server_requests_seconds_count%5B5m%5D%29%29&g0.tab=0&g0.stacked=0&g0.show_exemplars=0&g0.range_input=5m)
+
+### Dog Service
+- Dogs url: http://localhost:8080/dogs?aregood=true
+- Dogs command: `http ':8080/dogs?aregood=true'`
+- Get Owner's dogs url: http://user:password@localhost:8080/owners/tommy/dogs
+- Get Owner's dogs command: `http -a user:password :8080/owners/tommy/dogs`
+- Actuator url: http://admin:secret@localhost:8080/actuator
+- Actuator command: `http -a admin:secret :8080/actuator`
+
+### Dog Client
+- Get Owner's dogs url: http://localhost:8081/owners/tommy/dogs
+- Get Owner's dogs command: `http :8081/owners/tommy/dogs`
+- Actuator url: http://localhost:8081/actuator
+- Actuator command: `http :8081/actuator`
+
+### Misc.
+- Info Endpoint: http://localhost:8080/actuator/info
+- Metrics Endpoint: http://localhost:8080/actuator/metrics
+- Querying one metric: http://localhost:8080/actuator/metrics/http.server.requests
+- Querying tags: http://localhost:8080/actuator/metrics/http.server.requests?tag=status:404
+- Prometheus Endpoint: http://localhost:8080/actuator/prometheus
+- Requesting OpenMetrics format: `http :8080/actuator/prometheus 'Accept: application/openmetrics-text; version=1.0.0'`
+
+## Troubleshooting
+
+### Maven
+If you get an error that indicates a corrupt jar file (empty zip, invalid jar, etc.), e.g.:
+
+```
+java.io.IOException: Error reading file .../.m2/repository/.../something-1.2.3.jar: zip file is empty
+```
+
+You should navigate to your maven local cache and delete these files or containing folder. On Linux/Mac it should be under `"$HOME/.m2/repository"` on Windows its `%HOMEDRIVE%%HOMEPATH%\.m2\repository` (Do not remove the whole `.m2` or `.m2/repository` folder!). After removing the files, you can run `./mvnw package` again.
+
+### Docker
+If you have issues with Docker containers, you can remove them by executing:
 ```shell
 docker compose down
 ```
 
-### HTTPie
-We'll need to make some REST calls to our application.
-You can use whatever tool you like, but if you have no preference we recommend HTTPie.
-
-You can install it from https://httpie.io/
-
-Check if it works:
+If you still have issues, you can try deleting the volumes too:
 ```shell
-http 'example.org'
+docker compose down --volumes
 ```
 
-### IDE
-You can use any Java IDE you like to work with the code, just check that it can work with Maven projects.
+It can happen that Docker containers do not work because another process is occupying the same port that Docker wants to expose for a container. In this case, you should find and stop the process that uses the port in question.
 
-Please import the `dog-service` project.
+### IntelliJ IDEA
+If IntelliJ has issues importing your project, completely close it, delete the `.idea` folder and the `*.iml` files, run `./mvnw package` and try to import the project again.
+
+### Tempo
+If everything seemingly works in Grafana, but it seems it is not able to connect to Tempo, it might be because IntelliJ IDEA (I think it opens the same port as Tempo wants - Jonatan):
+
+1. Completely close IntelliJ
+2. Restart Tempo
+3. Check if Tempo works
+4. Start IntelliJ again
+
+### HTTP Basic Auth
+Your browser might re-use credentials for HTTP Basic Authentication so if you go to the `/owners/tommy/dogs` endpoint and you authenticate with `user:password`, you will get an error on the `/actuator` endpoint since you need to be `admin` to open it and your browser does not ask for credentials again. One way around it is using incognito windows for the separate credentials but another is passing the credentials in the url:
+- http://user:password@localhost:8080/owners/tommy/dogs
+- http://admin:secret@localhost:8080/actuator
+
+## Manual Instrumentation
+
+### Creating a MeterRegistry
+```java
+package com.example;
+
+import io.micrometer.prometheus.PrometheusConfig;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
+
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+### Micrometer: Counter + Tags
+```java
+void demo() {
+	registry.counter(
+		"test.counter",
+		"application", "test"
+	).increment();
+	System.out.println(registry.scrape());
+}
+```
+
+### Micrometer: Counter + Builder
+```java
+Counter.builder("test.counter")
+	.description("Test counter")
+	.baseUnit("events")
+	.tag("application", "test")
+	.register(registry) // create or get
+	.increment();
+```
+
+### High Cardinality 🧐
+```java
+for (int i = 0; i < 100; i++) {
+	Counter.builder("test.counter")
+		.tag("userId", String.valueOf(i))
+		.register(registry)
+		.increment();
+}
+```
+
+### Micrometer: Gauge
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final AtomicLong value = new AtomicLong(); // mutable + referenced
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		registry.gauge("test", value);
+		value.set(2);
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private Double value = 1024.0; // immutable, don't do this :(
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		registry.gauge("test", value);
+		value = 1.0;
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private Double value = 1024.0; // immutable and not referenced, don't do this :(
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		registry.gauge("test", value);
+		value = 1.0;
+		System.gc(); // well…
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final AtomicLong value = registry.gauge("test", new AtomicLong());
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		value.set(4);
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final List<String> list = new ArrayList<>();
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		registry.gauge("test", list, List::size);
+		list.add("test");
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final List<String> list = registry.gauge(
+		"test",
+		Tags.empty(),
+		new ArrayList<>(),	// "state object"
+		List::size			// "value function"
+	);
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		list.add("test");
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+private final List<String> list = registry.gaugeCollectionSize(
+	"test",
+	Tags.empty(),
+	new ArrayList<>()
+);
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final Map<String, Integer> map = registry.gaugeMapSize(
+		"test",
+		Tags.empty(),
+		new HashMap<>()
+	);
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		map.put("test", 42);
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	private final TemperatureSensor sensor = new TemperatureSensor();
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		Gauge.builder("test", () -> sensor.getTemperature() - 273.15)
+			.baseUnit("celsius")
+			.register(registry);
+		System.out.println(registry.scrape());
+	}
+
+	static class TemperatureSensor {
+		/**
+		 * @return random temperature in kelvin in the range of [283.15,303.15),
+		 * if you convert it to celsius: [10,30).
+		 */
+		double getTemperature() {
+			return Math.random() * 10 + 20 + 273.15;
+		}
+	}
+}
+```
+
+```java
+Gauge.builder("test", sensor::getTemperature)
+	.baseUnit("kelvin")
+	.register(registry);
+```
+
+### Micrometer: DistributionSummary
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		DistributionSummary ds = DistributionSummary
+			.builder("response.size")
+			.baseUnit("bytes")
+			.register(registry);
+
+		ds.record(10);
+		ds.record(20);
+
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+### Micrometer: Timer
+```java
+void demo() {
+	Timer timer = Timer.builder("requests").register(registry);
+	Sample sample = Timer.start();
+	doSomething();
+	sample.stop(timer);
+
+	System.out.println(registry.scrape());
+}
+
+void doSomething() {
+	try {
+		Thread.sleep((long) (Math.random() * 100 + 100)); // [100,200) ms
+	}
+	catch (InterruptedException e) {
+		throw new RuntimeException(e);
+	}
+}
+```
+
+```java
+void demo() throws Exception {
+	Timer timer = Timer.builder("requests").register(registry);
+	timer.record(() -> doSomething());
+	timer.recordCallable(() -> getSomething());
+
+	Runnable runnable = timer.wrap(() -> doSomething());
+	runnable.run();
+	Callable c = timer.wrap((Callable<String>) () -> getSomething());
+	c.call();
+	System.out.println(registry.scrape());
+}
+
+void doSomething() {
+	try {
+		Thread.sleep((long) (Math.random() * 100 + 100)); // [100,200) ms
+	}
+	catch (InterruptedException e) {
+		throw new RuntimeException(e);
+	}
+}
+
+String getSomething() {
+	doSomething();
+	return "something";
+}
+```
+
+### Micrometer: LongTaskTimer
+```java
+void demo() {
+	LongTaskTimer ltt = LongTaskTimer.builder("test").register(registry);
+
+	Sample sample = ltt.start();
+	doSomething();
+	System.out.println(registry.scrape());
+	sample.stop();
+}
+```
+
+### Micrometer: (Client-Side) Percentiles 🧐
+```java
+void demo() {
+	Timer timer = Timer.builder("requests")
+		.publishPercentiles(0.99, 0.999)
+		.register(registry);
+	Sample sample = Timer.start();
+	doSomething();
+	sample.stop(timer);
+
+	System.out.println(registry.scrape());
+}
+```
+
+### Micrometer: Histogram
+```java
+Timer timer = Timer.builder("requests")
+	.publishPercentileHistogram()
+	.register(registry);
+```
+
+### Micrometer: SLOs
+```java
+Timer timer = Timer.builder("requests")
+	.serviceLevelObjectives(Duration.ofMillis(10))
+	.register(registry);
+```
+
+### Micrometer: MeterProvider 🚀
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+	MeterProvider<Counter> provider = Counter.builder("test")
+			.tag("static", "42")
+			.withRegistry(registry);
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		provider.withTags("dynamic", "123").increment();
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+### Micrometer: MeterFilter
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry registry;
+
+	MicrometerDemo() {
+		this.registry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+		this.registry.config().commonTags("application", "micrometer.demo");
+		this.registry.config().meterFilter(new MeterFilter() {
+			@Override
+			public Id map(Id id) {
+				if (id.getName().equals("old"))
+					return id.withName("new");
+				else
+					return id;
+			}
+		});
+	}
+
+	public static void main(String[] args) throws Exception {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		registry.counter("old").increment();
+		System.out.println(registry.scrape());
+	}
+}
+```
+
+### Micrometer Tracing: Span
+```java
+@RestController
+@RequestMapping
+public class DogsController {
+	private final Tracer tracer;
+
+	public DogsController(Tracer tracer) {
+		this.tracer = tracer;
+	}
+
+	@GetMapping("/dogs")
+	public Map<String, String> dogs(@RequestParam(name = "aregood") boolean areGood) throws InterruptedException {
+		Span span = tracer.nextSpan().name("test");
+		try (SpanInScope ws = tracer.withSpan(span.start())) {
+			span.tag("userId", UUID.randomUUID().toString());
+			Thread.sleep(1_000);
+			span.event("logout");
+			Thread.sleep(1_000);
+		}
+		finally {
+			span.end();
+		}
+
+		String message = (!areGood) ? "Go find a cat service!" : "We <3 dogs!!!";
+		return Map.of("message", message);
+	}
+}
+```
+
+### Micrometer: Observation 🚀
+```java
+public class MicrometerDemo {
+	private final PrometheusMeterRegistry meterRegistry;
+	private final ObservationRegistry observationRegistry;
+
+	MicrometerDemo() {
+		this.meterRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+		this.observationRegistry = ObservationRegistry.create();
+		this.observationRegistry.observationConfig().observationHandler(new DefaultMeterObservationHandler(meterRegistry));
+	}
+
+	public static void main(String[] args) {
+		new MicrometerDemo().demo();
+	}
+
+	void demo() {
+		Observation observation = Observation.createNotStarted("talk", observationRegistry)
+			.contextualName("talk observation")
+			.lowCardinalityKeyValue("event", "SIO")
+			.highCardinalityKeyValue("uid", UUID.randomUUID().toString());
+
+		try (Scope scope = observation.start().openScope()) {
+			doSomething();
+			observation.event(Event.of("question"));
+		}
+		catch (Exception exception) {
+			observation.error(exception);
+			throw exception;
+		}
+		finally {
+			observation.stop();
+		}
+
+		System.out.println(meterRegistry.scrape());
+	}
+
+	void doSomething() {
+		try {
+			Thread.sleep((long) (Math.random() * 100 + 100)); // [100,200) ms
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+}
+```
+
+```java
+@RestController
+@RequestMapping
+public class DogsController {
+	private final ObservationRegistry registry;
+
+	public DogsController(ObservationRegistry registry) {
+		this.registry = registry;
+	}
+
+	@GetMapping("/dogs")
+	public Map<String, String> dogs(@RequestParam(name = "aregood") boolean areGood) {
+		return Observation.createNotStarted("test", registry)
+			.contextualName("Are dogs good?")
+			.lowCardinalityKeyValue("aregood", String.valueOf(areGood))
+			.highCardinalityKeyValue("uid", UUID.randomUUID().toString())
+			.observe(() -> {
+				String message = (!areGood) ? "Go find a cat service!" : "We <3 dogs!!!";
+				return Map.of("message", message);
+			});
+	}
+}
+```
+
+```java
+registry.observationConfig()
+	.observationPredicate(
+		(name, ctx) -> !name.startsWith("ignored")
+	);
+```
+
+```java
+registry.observationConfig()
+	.observationFilter(ctx -> ctx.addLowCardinalityKeyValue(KeyValue.of("abc", "42")));
+```
