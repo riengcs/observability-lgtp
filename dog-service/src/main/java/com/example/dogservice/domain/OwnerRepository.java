@@ -1,4 +1,4 @@
-	package com.example.dogservice.domain;
+package com.example.dogservice.domain;
 
 import org.springframework.data.repository.ListCrudRepository;
 

@@ -36,7 +36,7 @@ public class SecurityConfiguration {
 	@Bean
 	InMemoryUserDetailsManager inMemoryUserDetailsManager(SecurityProperties properties) {
 		List<UserDetails> userDetails = properties.users().stream().map(this::asUserDetails)
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 		return new InMemoryUserDetailsManager(userDetails);
 	}
 

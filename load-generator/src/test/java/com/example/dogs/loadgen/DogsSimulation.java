@@ -7,7 +7,9 @@ import io.gatling.javaapi.http.HttpProtocolBuilder;
 import java.time.Duration;
 
 import static io.gatling.http.HeaderValues.ApplicationJson;
-import static io.gatling.javaapi.core.CoreDsl.*;
+import static io.gatling.javaapi.core.CoreDsl.constantUsersPerSec;
+import static io.gatling.javaapi.core.CoreDsl.exec;
+import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 
 public class DogsSimulation extends Simulation {
@@ -29,8 +31,7 @@ public class DogsSimulation extends Simulation {
 		double random = Math.random();
 		if (random < 0.45) {
 			return "tommy";
-		}
-		else if (random < 0.9) {
+		} else if (random < 0.9) {
 			return "jonatan";
 		}
 
