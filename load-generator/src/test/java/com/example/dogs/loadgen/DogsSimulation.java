@@ -30,12 +30,12 @@ public class DogsSimulation extends Simulation {
 	String generateName() {
 		double random = Math.random();
 		if (random < 0.45) {
-			return "tommy";
+			return "Tommy";
 		} else if (random < 0.9) {
-			return "jonatan";
+			return "Jonatan";
 		}
 
-		return "qwerty";
+		return "Qwerty";
 	}
 
 	{
