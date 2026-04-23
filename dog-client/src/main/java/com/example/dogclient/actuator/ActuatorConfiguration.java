@@ -14,6 +14,7 @@ public class ActuatorConfiguration {
 	ObservationPredicate noActuatorObservations() {
 		return (name, context) -> {
 			if (name.equals("http.server.requests") && context instanceof ServerRequestObservationContext serverContext) {
+				assert serverContext.getCarrier() != null;
 				return !serverContext.getCarrier().getRequestURI().startsWith("/actuator");
 			}
 			return true;
