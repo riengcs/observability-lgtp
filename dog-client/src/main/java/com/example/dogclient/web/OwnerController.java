@@ -14,9 +14,6 @@ import org.springframework.web.filter.ServerHttpObservationFilter;
 
 import java.util.List;
 
-/**
- * Spring MVC controller for {@literal /owners}.
- */
 @RestController
 public class OwnerController {
 
