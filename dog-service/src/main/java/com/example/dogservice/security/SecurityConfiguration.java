@@ -16,9 +16,6 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Spring Security configuration.
- */
 @Configuration(proxyBeanMethods = false)
 public class SecurityConfiguration {
 
