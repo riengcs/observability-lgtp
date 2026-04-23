@@ -33,8 +33,7 @@ public class OwnerController {
 	@ExceptionHandler
 	ProblemDetail onApiError(HttpServletRequest request, RestClientResponseException ex) {
 		logger.error("Ooops!", ex);
-		ServerHttpObservationFilter.findObservationContext(request)
-			.ifPresent(context -> context.setError(ex));
+		ServerHttpObservationFilter.findObservationContext(request).ifPresent(context -> context.setError(ex));
 		ProblemDetail details = ProblemDetail.forStatus(ex.getStatusCode());
 		details.setProperty("downstream", ex.getResponseBodyAs(ProblemDetail.class));
 		return details;
