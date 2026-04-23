@@ -12,20 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres:/var/lib/postgresql
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:v3.10.0
-    restart: unless-stopped
-    extra_hosts: ['host.docker.internal:host-gateway']
-    command:
-      - --enable-feature=exemplar-storage
-      - --web.enable-remote-write-receiver
-      - --config.file=/etc/prometheus/prometheus.yml
-    volumes:
-      - prometheus:/prometheus
-      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    ports:
-      - "9090:9090"
   loki:
     container_name: loki
     image: grafana/loki:3.7.0
@@ -46,6 +32,20 @@ services:
     ports:
       - "3200:3200"    # tempo
       - "9411:9411"    # zipkin
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.10.0
+    restart: unless-stopped
+    extra_hosts: ['host.docker.internal:host-gateway']
+    command:
+      - --enable-feature=exemplar-storage
+      - --web.enable-remote-write-receiver
+      - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+      - prometheus:/prometheus
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
   grafana:
     container_name: grafana
     image: grafana/grafana:12.4.2
