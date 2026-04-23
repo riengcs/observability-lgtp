@@ -3,9 +3,6 @@ package com.example.dogservice.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-/**
- * JPA entity for a dog owner.
- */
 @Entity
 public class Owner {
 

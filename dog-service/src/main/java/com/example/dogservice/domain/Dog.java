@@ -6,9 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-/**
- * JPA entity for a dog.
- */
 @Entity
 public class Dog {
 
