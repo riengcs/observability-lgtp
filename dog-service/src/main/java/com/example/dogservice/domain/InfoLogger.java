@@ -6,9 +6,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-/**
- * Logs database information at start up.
- */
 @Component
 public class InfoLogger implements ApplicationRunner {
 
