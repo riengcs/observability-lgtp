@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>4.0.5</version>
-		<relativePath />
+		<relativePath/>
 	</parent>
 	<groupId>com.example.dogclient</groupId>
 	<artifactId>dog-client</artifactId>
@@ -15,11 +15,6 @@
 		<loki4j.version>2.0.3</loki4j.version>
 	</properties>
 	<dependencies>
-		<!-- Compile -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc</artifactId>
@@ -29,6 +24,10 @@
 			<artifactId>spring-boot-starter-restclient</artifactId>
 		</dependency>
 		<!-- Observability -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.github.loki4j</groupId>
 			<artifactId>loki-logback-appender</artifactId>
@@ -42,6 +41,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-zipkin</artifactId>
 		</dependency>
+
 		<!-- Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -64,6 +64,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -99,4 +100,5 @@
 			</plugin>
 		</plugins>
 	</build>
+
 </project>
