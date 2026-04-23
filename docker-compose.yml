@@ -14,7 +14,7 @@ services:
       - postgres:/var/lib/postgresql
   loki:
     container_name: loki
-    image: grafana/loki:3.7.0
+    image: grafana/loki:3.7.1
     restart: unless-stopped
     extra_hosts: ['host.docker.internal:host-gateway']
     command: ['-config.file=/etc/loki/local-config.yaml']
@@ -22,7 +22,7 @@ services:
       - "3100:3100"
   tempo:
     container_name: tempo
-    image: grafana/tempo:2.10.3
+    image: grafana/tempo:2.10.4
     restart: unless-stopped
     extra_hosts: ['host.docker.internal:host-gateway']
     command: ['-config.file=/etc/tempo.yml']
@@ -34,7 +34,7 @@ services:
       - "9411:9411"    # zipkin
   prometheus:
     container_name: prometheus
-    image: prom/prometheus:v3.10.0
+    image: prom/prometheus:v3.11.2
     restart: unless-stopped
     extra_hosts: ['host.docker.internal:host-gateway']
     command:
@@ -48,7 +48,7 @@ services:
       - "9090:9090"
   grafana:
     container_name: grafana
-    image: grafana/grafana:12.4.2
+    image: grafana/grafana:12.4.3
     restart: unless-stopped
     extra_hosts: ['host.docker.internal:host-gateway']
     environment:
