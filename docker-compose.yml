@@ -30,8 +30,8 @@ services:
       - tempo:/var/tempo
       - ./docker/grafana/tempo.yml:/etc/tempo.yml:ro
     ports:
-      - "3200:3200"    # tempo
-      - "9411:9411"    # zipkin
+      - "3200:3200"    # Tempo
+      - "9411:9411"    # Zipkin
   prometheus:
     container_name: prometheus
     image: prom/prometheus:v3.11.2
