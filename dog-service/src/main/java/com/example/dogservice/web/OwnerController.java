@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Spring MVC controller for {@literal /owners}.
- */
 @RestController
 public class OwnerController {
 

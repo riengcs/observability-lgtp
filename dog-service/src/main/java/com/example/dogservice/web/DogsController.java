@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-/**
- * Spring MVC controller for {@literal /dogs}.
- */
 @RestController
 @RequestMapping
 public class DogsController {
