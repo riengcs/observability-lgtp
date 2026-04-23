@@ -24,11 +24,11 @@ management:
     web:
       exposure:
         include:
-        - "*"
+          - "*"
     jmx:
       exposure:
         include:
-        - "*"
+          - "*"
   endpoint:
     env:
       show-values: always
@@ -36,8 +36,8 @@ management:
 application:
   security:
     users:
-    - name: "user"
-      password: "password"
-    - name: "admin"
-      password: "secret"
-      roles: ["admin"]
+      - name: "user"
+        password: "password"
+      - name: "admin"
+        password: "secret"
+        roles: ["admin"]
